@@ -103,7 +103,7 @@ def get_valid_customer_name():
         name = input("Enter customer's name: ").strip()
         if name:
             return name
-        print("Error: Customer name cannot be empty. Please try again.")
+        print("ERROR: Customer name cannot be empty. Please try again.")
 
 def get_valid_date():
     while True:
@@ -114,9 +114,9 @@ def get_valid_date():
             # Return the date in the desired format
             return date_obj.strftime("%B %d, %Y")
         except ValueError:
-            print("Error: Invalid date format. Please use format like 'January 16, 2024'")
-            print("Valid months are: January, February, March, April, May, June, July,")
-            print("August, September, October, November, December")
+            print("ERROR: Invalid date format. Please use format like 'January 16, 2024'")
+            print("Valid months are: January, February, March, April, May, June, July, August, September, October, November, December")
+        
 
 def main():
     customer_name = get_valid_customer_name()
