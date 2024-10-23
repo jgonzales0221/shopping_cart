@@ -1,6 +1,7 @@
 from item_to_purchase import ItemToPurchase
 from datetime import datetime
 
+
 class ShoppingCart:
     def __init__(self, customer_name="none", current_date="January 1, 2020"):
         self.customer_name = customer_name
@@ -15,11 +16,15 @@ class ShoppingCart:
             if item.item_name == item_name:
                 self.cart_items.remove(item)
                 return
-        print("ERROR: Item not found in cart. Nothing removed.")
-    
+        print("Item not found in cart. Nothing removed.")
+ 
     def modify_item(self, item_to_modify):
         for item in self.cart_items:
             if item.item_name == item_to_modify.item_name:
+                if item_to_modify.item_quantity == 0:
+                    self.cart_items.remove(item)
+                    print(f"{item.item_name} removed from the cart.")
+                    return
                 if item_to_modify.item_description != "none":
                     item.item_description = item_to_modify.item_description
                 if item_to_modify.item_price != 0:
@@ -27,27 +32,21 @@ class ShoppingCart:
                 if item_to_modify.item_quantity != 0:
                     item.item_quantity = item_to_modify.item_quantity
                 return
-        print("ERROR: Item not found in cart. Nothing modified.")
-    
+        print("Item not found in cart. Nothing modified.")
+        
     def get_num_items_in_cart(self):
-        total_quantity = 0
-        for item in self.cart_items:
-            total_quantity += item.item_quantity
-        return total_quantity
+        return sum(item.item_quantity for item in self.cart_items)
     
     def get_cost_of_cart(self):
-        total_cost = 0
-        for item in self.cart_items:
-            total_cost += (item.item_price * item.item_quantity)
-        return total_cost
+        return sum(item.item_price * item.item_quantity for item in self.cart_items)
     
     def print_total(self):
         if not self.cart_items:
-            print("Your shopping cart is empty!")
+            print("SHOPPING CART IS EMPTY")
             return
             
         print(f"{self.customer_name}'s Shopping Cart - {self.current_date}")
-        print(f"\nNumber of Items: {self.get_num_items_in_cart()}\n")
+        print(f"Number of Items: {self.get_num_items_in_cart()}\n")
         
         for item in self.cart_items:
             total = item.item_price * item.item_quantity
@@ -57,7 +56,7 @@ class ShoppingCart:
     
     def print_descriptions(self):
         print(f"{self.customer_name}'s Shopping Cart - {self.current_date}")
-        print("\nItem Descriptions\n")
+        print("\nItem Descriptions")
         for item in self.cart_items:
             print(f"{item.item_name}: {item.item_description}")
 
@@ -71,50 +70,44 @@ def print_menu(cart):
         print("o - Output shopping cart")
         print("q - Quit")
         
-        choice = input("\nChoose an option: ")
+        choice = input("\nChoose an option: ").lower()
         
         if choice == 'q':
             break
         elif choice == 'o':
-            print("\nOUTPUT SHOPPING CART\n")
+            print("\nOUTPUT SHOPPING CART")
             cart.print_total()
         elif choice == 'i':
-            print("\nOUTPUT ITEMS' DESCRIPTIONS\n")
+            print("\nOUTPUT ITEMS' DESCRIPTIONS")
             cart.print_descriptions()
         elif choice == 'a':
-            try:
-                name = input("Enter item name: ")
-                description = input("Enter item description: ")
-                price = float(input("Enter item price: "))
-                quantity = int(input("Enter item quantity: "))
-                item = ItemToPurchase(name, price, quantity, description)
-                cart.add_item(item)
-            except ValueError:
-                print("ERROR: Price must be a number and quantity must be an integer.")
+            name = input("Enter item name: ")
+            description = input("Enter item description: ")
+            price = float(input("Enter item price: "))
+            quantity = int(input("Enter item quantity: "))
+            item = ItemToPurchase(name, price, quantity, description)
+            cart.add_item(item)
         elif choice == 'r':
             name = input("Enter name of item to remove: ")
             cart.remove_item(name)
         elif choice == 'c':
-            try:
-                name = input("Enter the item name: ")
-                new_quantity = int(input("Enter the new quantity: "))
-                item = ItemToPurchase(name, quantity=new_quantity)
-                cart.modify_item(item)
-            except ValueError:
-                print("ERROR: Quantity must be an integer.")
+            name = input("Enter the item name: ")
+            new_quantity = int(input("Enter the new quantity: "))
+            item = ItemToPurchase(name, quantity=new_quantity)
+            cart.modify_item(item)
         else:
-            print("ERROR: Invalid option. Please try again.")
+            print("Invalid option. Please try again.")
 
 def get_valid_customer_name():
     while True:
         name = input("Enter customer's name: ").strip()
         if name:
             return name
-        print("ERROR: Customer name cannot be empty. Please try again.")
+        print("Error: Customer name cannot be empty. Please try again.")
 
 def get_valid_date():
     while True:
-        date_str = input("Enter today's date (e.g., 'January 16, 2024'):").strip()
+        date_str = input("Enter today's date ('e.g. January 1, 2020'): ").strip()
         try:
             # Attempt to parse the date
             date_obj = datetime.strptime(date_str, "%B %d, %Y")
@@ -122,7 +115,8 @@ def get_valid_date():
             return date_obj.strftime("%B %d, %Y")
         except ValueError:
             print("Error: Invalid date format. Please use format like 'January 16, 2024'")
-            print("Valid months are: January, February, March, April, May, June, July, August, September, October, November, December")
+            print("Valid months are: January, February, March, April, May, June, July,")
+            print("August, September, October, November, December")
 
 def main():
     customer_name = get_valid_customer_name()
