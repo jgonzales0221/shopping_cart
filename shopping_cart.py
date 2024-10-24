@@ -3,6 +3,7 @@ from datetime import datetime
 
 
 class ShoppingCart:
+    
     def __init__(self, customer_name="none", current_date="January 1, 2020"):
         self.customer_name = customer_name
         self.current_date = current_date
@@ -50,9 +51,9 @@ class ShoppingCart:
         
         for item in self.cart_items:
             total = item.item_price * item.item_quantity
-            print(f"{item.item_name} {item.item_quantity} @ ${item.item_price} = ${total}")
+            print(f"{item.item_name} {item.item_quantity} @ ${item.item_price:.2f} = ${total:.2f}")
         
-        print(f"\nTotal: ${self.get_cost_of_cart()}")
+        print(f"\nTotal: ${self.get_cost_of_cart():.2f}")
     
     def print_descriptions(self):
         print(f"{self.customer_name}'s Shopping Cart - {self.current_date}")
@@ -92,11 +93,20 @@ def print_menu(cart):
             cart.remove_item(name)
         elif choice == 'c':
             name = input("Enter the item name: ")
-            new_quantity = int(input("Enter the new quantity: "))
-            item = ItemToPurchase(name, quantity=new_quantity)
-            cart.modify_item(item)
+            
+            
+            for item in cart.cart_items:
+                if item.item_name == name:
+                    new_quantity = int(input(f"Enter the new quantity for {name}: "))
+                    
+                    modified_item = ItemToPurchase(name, item.item_price, new_quantity, item.item_description)
+                    cart.modify_item(modified_item)
+                    break
+            else:
+                print(f"Item {name} not found in the cart.")
         else:
             print("Invalid option. Please try again.")
+
 
 def get_valid_customer_name():
     while True:
@@ -109,9 +119,9 @@ def get_valid_date():
     while True:
         date_str = input("Enter today's date ('e.g. January 1, 2020'): ").strip()
         try:
-            # Attempt to parse the date
+            
             date_obj = datetime.strptime(date_str, "%B %d, %Y")
-            # Return the date in the desired format
+            
             return date_obj.strftime("%B %d, %Y")
         except ValueError:
             print("ERROR: Invalid date format. Please use format like 'January 16, 2024'")
