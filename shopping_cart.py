@@ -98,7 +98,7 @@ def main():
     
     # Instantiate shopping cart with customer name and date
     cart = ShoppingCart(customer_name, current_date)
-    print(f"Customer name: {cart.customer_name}")
+    print(f"\nCustomer name: {cart.customer_name}")
     print(f"Today's date: {cart.current_date}")
 
     # Main loop to display menu and perform actions
